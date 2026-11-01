@@ -19,7 +19,6 @@ function n(v){if(v==null||String(v).trim()==='')return null;let x=Number(v);retu
 function date(v){return new Date(v).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})}
 function level(){return Math.floor(state.xp/500)+1}
 
-// ПРОВЕРКА НАКРУТКИ XP
 function canEarnXP(type) {
   let today = new Date().toISOString().slice(0,10);
   return !state.events.some(e => e.date && e.date.slice(0,10) === today && e.type === type);
@@ -34,23 +33,24 @@ function screen(id){
   scrollTo({top:0,behavior:'smooth'})
 }
 
+// Безопасное навешивание событий
 document.querySelectorAll('nav [data-screen],.text-button').forEach(b=>b.addEventListener('click',()=>screen(b.dataset.screen)));
-$('avatar').onclick=()=>screen('profile');
+if($('avatar')) $('avatar').onclick=()=>screen('profile');
 
-// ОНБОРДИНГ
 document.querySelectorAll('[data-goal]').forEach(b=>b.onclick=()=>{
   goal=b.dataset.goal;
   document.querySelectorAll('[data-goal]').forEach(x=>x.classList.toggle('selected',x===b));
-  $('next1').disabled=false;
+  if($('next1')) $('next1').disabled=false;
 });
-$('next1').onclick=()=>step(1);
-$('back2').onclick=()=>step(0);
-$('next2').onclick=()=>step(2);
-$('back3').onclick=()=>step(1);
-function step(i){['step1','step2','step3'].forEach((id,j)=>$(id).classList.toggle('hidden',j!==i));$('stepIndicator').textContent=`ШАГ ${i+1} ИЗ 3`}
-function onboarding(){ $('onboarding').classList.remove('hidden');step(0)}
+if($('next1')) $('next1').onclick=()=>step(1);
+if($('back2')) $('back2').onclick=()=>step(0);
+if($('next2')) $('next2').onclick=()=>step(2);
+if($('back3')) $('back3').onclick=()=>step(1);
 
-$('createProfile').onclick=()=>{
+function step(i){['step1','step2','step3'].forEach((id,j)=>{if($(id)) $(id).classList.toggle('hidden',j!==i)});if($('stepIndicator')) $('stepIndicator').textContent=`ШАГ ${i+1} ИЗ 3`}
+function onboarding(){ if($('onboarding')) $('onboarding').classList.remove('hidden'); step(0)}
+
+if($('createProfile')) $('createProfile').onclick=()=>{
   state=blank();
   state.profile={name:$('name').value.trim()||'Атлет',goal:goal||'general',experience:$('experience').value,frequency:Number($('frequency').value),height:n($('height').value)};
   let w=n($('initialWeight').value),waist=n($('initialWaist').value);
@@ -61,18 +61,39 @@ $('createProfile').onclick=()=>{
   toast('Профиль создан. Добро пожаловать!');
 };
 
-// КНОПКИ БЫСТРОГО ВВОДА (С ЗАЩИТОЙ)
 document.querySelectorAll('[data-xp]').forEach(b=>b.onclick=()=>{
   let p=Number(b.dataset.xp);
   let type='quick_'+p;
-  if(!canEarnXP(type)) return toast('Уже учтено сегодня');
+  if(!canEarnXP(type)) return toast('Уже
+
+
+umentElement.setAttribute('data-theme', state.theme || 'light');
+    renderAll(); toast('Копия восстановлена');
+  }catch(_){toast('Ошибка чтения файла')}
+  e.target.value='';
+};
+
+if($('reset')) $('reset').onclick=()=>{
+  if(!confirm('Удалить все данные? Сначала сделай экспорт!'))return;
+  localStorage.removeItem(KEY); state=blank();
+  document.documentElement.setAttribute('data-theme', 'light');
+  onboarding();
+};
+
+function renderAll(){renderHome();renderPlan();renderProfile();renderProgress()}
+
+// Запуск
+if(!state.profile) onboarding();
+else{ if($('onboarding')) $('onboarding').classList.add('hidden'); renderAll() }
+})();
+
+
+учтено сегодня');
   state.xp+=p;
   state.events.unshift({points:p,date:new Date().toISOString(),type});
   save();
   renderAll();
-
-
-toast('+'+p+' XP добавлено');
+  toast('+'+p+' XP добавлено');
 });
 
 document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{
@@ -81,49 +102,45 @@ document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=()=>{
   renderPlan();
 });
 
-// ОТРИСОВКА И СОХРАНЕНИЕ ПОДХОДОВ
 function renderPlan(){
   let p=plans[plan];
-  $('planMeta').textContent=p.name;
-  
+  if($('planMeta')) $('planMeta').textContent=p.name;
   if(!state.activeWorkout || state.activeWorkout.plan !== plan) {
       state.activeWorkout = { plan: plan, entries: p.items.map(item => ({ exercise: item[0], sets: Array.from({length: item[2]}, () => ({w:null, r:null, rir:null})) })) };
       save();
   }
   
-  $('exercises').innerHTML=p.items.map((e,i)=>`
-    <article class="exercise">
-      <b>${esc(e[0])}</b><small>${e[1]}</small>
-      <div class="set-labels"><span>№</span><span>Вес, кг</span><span>Повт.</span><span>RIR</span></div>
-      ${Array.from({length:e[2]},(_,j)=>{
-        let s = state.activeWorkout.entries[i].sets[j] || {w:'', r:'', rir:''};
-        return `<div class="set-row">
-          <span>${j+1}</span>
-          <input type="number" inputmode="decimal" min="0" step=".5" placeholder="—" value="${s.w??''}" data-i="${i}" data-j="${j}" data-f="w" aria-label="Вес">
-          <input type="number" inputmode="numeric" min="0" placeholder="—" value="${s.r??''}" data-i="${i}" data-j="${j}" data-f="r" aria-label="Повторения">
-          <input type="number" inputmode="numeric" min="0" max="10" placeholder="—" value="${s.rir??''}" data-i="${i}" data-j="${j}" data-f="rir" aria-label="RIR">
-        </div>`
-      }).join('')}
-    </article>`).join('');
+  if($('exercises')) {
+      $('exercises').innerHTML=p.items.map((e,i)=>`
+        <article class="exercise">
+          <b>${esc(e[0])}</b><small>${e[1]}</small>
+          <div class="set-labels"><span>№</span><span>Вес, кг</span><span>Повт.</span><span>RIR</span></div>
+          ${Array.from({length:e[2]},(_,j)=>{
+            let s = state.activeWorkout.entries[i].sets[j] || {w:'', r:'', rir:''};
+            return `<div class="set-row">
+              <span>${j+1}</span>
+              <input type="number" inputmode="decimal" min="0" step=".5" placeholder="—" value="${s.w??''}" data-i="${i}" data-j="${j}" data-f="w" aria-label="Вес">
+              <input type="number" inputmode="numeric" min="0" placeholder="—" value="${s.r??''}" data-i="${i}" data-j="${j}" data-f="r" aria-label="Повторения">
+              <input type="number" inputmode="numeric" min="0" max="10" placeholder="—" value="${s.rir??''}" data-i="${i}" data-j="${j}" data-f="rir" aria-label="RIR">
+            </div>`
+          }).join('')}
+        </article>`).join('');
 
-  // МГНОВЕННОЕ СОХРАНЕНИЕ
-  document.querySelectorAll('#exercises input').forEach(inp => {
-    inp.addEventListener('input', (e) => {
-      let i = e.target.dataset.i, j = e.target.dataset.j, f = e.target.dataset.f;
-      state.activeWorkout.entries[i].sets[j][f] = n(e.target.value);
-      save();
-    });
-  });
+      document.querySelectorAll('#exercises input').forEach(inp => {
+        inp.addEventListener('input', (e) => {
+          let i = e.target.dataset.i, j = e.target.dataset.j, f = e.target.dataset.f;
+          state.activeWorkout.entries[i].sets[j][f] = n(e.target.value);
+          save();
+        });
+      });
+  }
 }
 
-// ЗАВЕРШЕНИЕ ТРЕНИРОВКИ
-$('finish').onclick=()=>{
+if($('finish')) $('finish').onclick=()=>{
   let hasData = state.activeWorkout.entries.some(e => e.sets.some(s => s.w!==null || s.r!==null || s.rir!==null));
   if(!hasData) return toast('Заполни хотя бы один подход');
-  
   state.workouts.unshift({plan, name:plans[plan].name, date:new Date().toISOString(), entries:state.activeWorkout.entries});
   let isCompletedToday = !canEarnXP('workout');
-  
   if(isCompletedToday) {
     toast('Тренировка сохранена (XP за сегодня уже получен)');
   } else {
@@ -131,10 +148,8 @@ $('finish').onclick=()=>{
     state.events.unshift({points:50,date:new Date().toISOString(),type:'workout'});
     toast('Тренировка сохранена · +50 XP');
   }
-  
   state.activeWorkout = null; 
-  save();
-  renderAll();
+  save(); renderAll();
 };
 
 function latest(){return state.measurements[0]||{}}
@@ -142,11 +157,11 @@ function card(label,v,unit){return `<div>${label}<strong>${v==null?'—':String(
 
 function renderHome(){
   let p=state.profile, m=latest(), lvl=level(), progress=state.xp%500;
-  $('level').textContent='LVL '+String(lvl).padStart(2,'0');
-  $('xp').textContent=state.xp;
-  $('bar').style.width=(progress/500*100)+'%';
-  $('xpInfo').textContent=progress+' / 500 XP';
-  $('greeting').innerHTML=`Привет, ${esc(p.name)}.<em>${esc(goals[p.goal])}.</em>`;
+  if($('level')) $('level').textContent='LVL '+String(lvl).padStart(2,'0');
+  if($('xp')) $('xp').textContent=state.xp;
+  if($('bar')) $('bar').style.width=(progress/500*100)+'%';
+  if($('xpInfo')) $('xpInfo').textContent=progress+' / 500 XP';
+  if($('greeting')) $('greeting').innerHTML=`Привет, ${esc(p.name)}.<em>${esc(goals[p.goal])}.</em>`;
   
   let c=[];
   if(['cut','muscle','general'].includes(p.goal))c.push(card('Вес',m.weight,'кг'));
@@ -156,31 +171,33 @@ function renderHome(){
   if(p.goal==='endurance')c.push(card('Кардио',state.events.filter(e=>e.type==='cardio').length,''));
   c.push(card('Тренировок',state.workouts.length,''));
   
-  $('homeMetrics').innerHTML=c.join('');
-  $('metricsTitle').textContent=p.goal==='strength'?'Силовой прогресс':p.goal==='endurance'?'Активность':'Твои показатели';
-  
-  let seq=['A','B','C'], last=state.workouts[0], next=last?seq[(seq.indexOf(last.plan)+1)%3]:'A';
-  $('nextWorkout').innerHTML=`<div><b>${plans[next].name}</b><small>Следующая по очереди PPL</small></div><button id="openNext">Открыть</button>`;
-  $('openNext').onclick=()=>{
-    plan=next
+  if($('homeMetrics')) $('homeMetrics').innerHTML=c.join('');
+  if($('metricsTitle')) $('metricsTitle').textContent=p.goal==='strength'?'Силовой прогресс':p.goal==='endurance'?'Активность':'Твои показатели';
 
 
-;
-    document.querySelectorAll('[data-plan]').forEach(x=>x.classList.toggle('sel',x.dataset.plan===plan));
-    screen('gym');
-  };
+let seq=['A','B','C'], last=state.workouts[0], next=last?seq[(seq.indexOf(last.plan)+1)%3]:'A';
+  if($('nextWorkout')) {
+      $('nextWorkout').innerHTML=`<div><b>${plans[next].name}</b><small>Следующая по очереди PPL</small></div><button id="openNext">Открыть</button>`;
+      $('openNext').onclick=()=>{
+        plan=next;
+        document.querySelectorAll('[data-plan]').forEach(x=>x.classList.toggle('sel',x.dataset.plan===plan));
+        screen('gym');
+      };
+  }
 }
 
 function renderProgress(){
   let p=state.profile;
-  $('progressFields').innerHTML=`
-    <label>Вес, кг<input id="winput" type="number" inputmode="decimal" step=".1" placeholder="Необязательно"></label>
-    ${p.goal==='strength'?'':`<label>Талия, см<input id="tinput" type="number" inputmode="decimal" step=".5" placeholder="Необязательно"></label>`}
-  `;
-  $('history').innerHTML=state.measurements.length?state.measurements.slice(0,20).map(m=>`<div class="history-item">${date(m.date)} · ${m.weight!=null?m.weight+' кг':'вес —'} · ${m.waist!=null?'талия '+m.waist+' см':'талия —'}</div>`).join(''):'<div class="empty-state">Пока нет измерений. Добавь первый показатель, когда будешь готов.</div>';
-  $('workoutHistory').innerHTML=state.workouts.length?state.workouts.slice(0,10).map(w=>`<div class="history-item"><b>${esc(w.name)}</b><small>${date(w.date)} · ${w.entries.length} упражнений</small></div>`).join(''):'<div class="empty-state">Здесь появятся сохранённые тренировки.</div>';
+  if($('progressFields')) {
+      $('progressFields').innerHTML=`
+        <label>Вес, кг<input id="winput" type="number" inputmode="decimal" step=".1" placeholder="Необязательно"></label>
+        ${p.goal==='strength'?'':`<label>Талия, см<input id="tinput" type="number" inputmode="decimal" step=".5" placeholder="Необязательно"></label>`}
+      `;
+  }
+  if($('history')) $('history').innerHTML=state.measurements.length?state.measurements.slice(0,20).map(m=>`<div class="history-item">${date(m.date)} · ${m.weight!=null?m.weight+' кг':'вес —'} · ${m.waist!=null?'талия '+m.waist+' см':'талия —'}</div>`).join(''):'<div class="empty-state">Пока нет измерений. Добавь первый показатель, когда будешь готов.</div>';
+  if($('workoutHistory')) $('workoutHistory').innerHTML=state.workouts.length?state.workouts.slice(0,10).map(w=>`<div class="history-item"><b>${esc(w.name)}</b><small>${date(w.date)} · ${w.entries.length} упражнений</small></div>`).join(''):'<div class="empty-state">Здесь появятся сохранённые тренировки.</div>';
   
-  $('saveMetrics').onclick=()=>{
+  if($('saveMetrics')) $('saveMetrics').onclick=()=>{
     let weight=n($('winput').value), waist=$('tinput')?n($('tinput').value):null;
     if(weight===null&&waist===null)return toast('Введи хотя бы один показатель');
     state.measurements.unshift({date:new Date().toISOString(),weight,waist});
@@ -203,19 +220,19 @@ function streak(){
 
 function renderProfile(){
   let p=state.profile;
-  $('profileName').textContent=p.name;
-  $('profileGoal').textContent=goals[p.goal];
-  $('profileAvatar').textContent=p.name.slice(0,1).toUpperCase();
-  $('profileXP').textContent=state.xp;
-  $('profileLevel').textContent=level();
-  $('profileWorkouts').textContent=state.workouts.length;
-  $('profileStreak').textContent=streak();
-  $('editName').value=p.name;
-  $('editGoal').value=p.goal;
-  $('editTheme').value=state.theme;
+  if($('profileName')) $('profileName').textContent=p.name;
+  if($('profileGoal')) $('profileGoal').textContent=goals[p.goal];
+  if($('profileAvatar')) $('profileAvatar').textContent=p.name.slice(0,1).toUpperCase();
+  if($('profileXP')) $('profileXP').textContent=state.xp;
+  if($('profileLevel')) $('profileLevel').textContent=level();
+  if($('profileWorkouts')) $('profileWorkouts').textContent=state.workouts.length;
+  if($('profileStreak')) $('profileStreak').textContent=streak();
+  if($('editName')) $('editName').value=p.name;
+  if($('editGoal')) $('editGoal').value=p.goal;
+  if($('editTheme')) $('editTheme').value=state.theme;
 }
 
-$('saveProfile').onclick=()=>{
+if($('saveProfile')) $('saveProfile').onclick=()=>{
   state.profile.name=$('editName').value.trim()||'Атлет';
   state.profile.goal=$('editGoal').value;
   state.theme=$('editTheme').value;
@@ -223,35 +240,19 @@ $('saveProfile').onclick=()=>{
   save(); renderAll(); toast('Настройки обновлены');
 };
 
-$('export').onclick=()=>{
+if($('export')) $('export').onclick=()=>{
   let blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url; a.download='ppl-gym-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); URL.revokeObjectURL(url); toast('Резервная копия подготовлена');
 };
 
-$('import').onclick=()=>$('importFile').click();
-$('importFile').onchange=async e=>{
+if($('import')) $('import').onclick=()=>$('importFile').click();
+if($('importFile')) $('importFile').onchange=async e=>{
   let f=e.target.files[0]; if(!f)return;
   try{
     let d=JSON.parse(await f.text());
     if(!d.profile||!Array.isArray(d.workouts))throw Error();
     state=Object.assign(blank(),d); save();
-    document.documentElement.setAttribute('data-theme', state.theme || 'light');
-    renderAll(); toast('Копия восстановлена');
-  }catch(_){toast('Ошибка чтения файла')}
-  e.target.value='';
-};
-
-$('reset').onclick=()=>{
-  if(!confirm('Удалить все данные? Сначала сделай экспорт!'))return;
-  localStorage.removeItem(KEY); state=blank();
-  document.documentElement.setAttribute('data-theme', 'light');
-  onboarding();
-};
-
-function renderAll(){renderHome();renderPlan();renderProfile();renderProgress()}
-if(!state.profile) onboarding();
-else{ $('onboarding').classList.add('hidden'); renderAll() }
-})();
+    document.doc
 
 
 

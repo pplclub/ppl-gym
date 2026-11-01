@@ -1,8 +1,212 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5f5f7"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ppl gym"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><link rel="stylesheet" href="style.css"><title>ppl gym 2.0</title></head><body>
-<div id="onboarding" class="onboarding hidden"><div class="onboarding-card"><small>PERSONAL FITNESS SYSTEM</small><div class="brand">ppl gym<span>.</span></div><p class="eyebrow" id="stepIndicator">ШАГ 1 ИЗ 3</p><section id="step1"><h1>Какая у тебя цель?</h1><p class="muted">Настроим приложение под то, что важно именно тебе.</p><div class="goal-grid"><button class="goal-option" data-goal="cut">↘<b>Похудение</b><small>Снижение веса и привычки</small></button><button class="goal-option" data-goal="muscle">＋<b>Набор мышц</b><small>Мышечная масса и объёмы</small></button><button class="goal-option" data-goal="strength">↗<b>Сила</b><small>Рабочие веса и рекорды</small></button><button class="goal-option" data-goal="endurance">⌁<b>Выносливость</b><small>Кардио и работоспособность</small></button><button class="goal-option wide" data-goal="general">✳<b>Общая форма</b><small>Баланс тренировок и самочувствия</small></button></div><button class="primary" id="next1" disabled>Продолжить</button></section><section id="step2" class="hidden"><h1>Создадим профиль</h1><label>Как тебя называть<input id="name" maxlength="40" placeholder="Твоё имя"></label><label>Тренировочный опыт<select id="experience"><option value="beginner">Начинающий — до 1 года</option><option value="intermediate">Средний — 1–3 года</option><option value="advanced">Опытный — более 3 лет</option></select></label><label>Тренировок в неделю<select id="frequency"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label><div class="buttons"><button class="secondary" id="back2">Назад</button><button class="primary" id="next2">Продолжить</button></div></section><section id="step3" class="hidden"><h1>Начальные показатели</h1><p class="muted">Необязательно. Их можно добавить позже.</p><label>Вес, кг<input id="initialWeight" type="number" min="25" max="350" step="0.1" placeholder="Необязательно"></label><label>Рост, см<input id="height" type="number" min="100" max="250" placeholder="Необязательно"></label><label>Талия, см<input id="initialWaist" type="number" min="30" max="250" step="0.5" placeholder="Необязательно"></label><div class="buttons"><button class="secondary" id="back3">Назад</button><button class="primary" id="createProfile">Создать профиль</button></div></section><p class="privacy-note">Данные пока хранятся в этом браузере на этом устройстве. Делай резервные копии в разделе «Профиль».</p></div></div>
-<main class="app"><header><div><small>PERSONAL FITNESS SYSTEM</small><h1>ppl gym<span>.</span></h1></div><button class="avatar" id="avatar">P</button></header>
-<section id="home" class="screen active"><p class="eyebrow">ТВОЙ ПРОГРЕСС</p><h2 id="greeting">Становись сильнее.<br><em>Шаг за шагом.</em></h2><div class="hero"><small>ТЕКУЩИЙ УРОВЕНЬ</small><div class="hero-row"><strong id="level">LVL 01</strong><b><span id="xp">0</span> XP</b></div><div class="track"><i id="bar"></i></div><small id="xpInfo">0 / 500 XP</small></div><h3>Быстрый ввод</h3><div class="grid"><button data-xp="50"><span>＋</span><b>Тренировка</b><small>+50 XP</small></button><button data-xp="20"><span>↗</span><b>Кардио</b><small>+20 XP</small></button><button data-xp="10"><span>◒</span><b>Питание</b><small>+10 XP</small></button><button data-xp="15"><span>☾</span><b>Восстановление</b><small>+15 XP</small></button></div><div class="heading"><h3 id="metricsTitle">Твои показатели</h3><button class="text-button" data-screen="progress">История</button></div><div class="metrics" id="homeMetrics"></div><h3>Следующая тренировка</h3><div class="next-workout" id="nextWorkout"></div></section>
-<section id="gym" class="screen"><p class="eyebrow">TRAINING LOG</p><h2>Тренировки</h2><p class="muted">Записывай рабочие подходы, повторения и запас повторений (RIR).</p><div class="tabs"><button data-plan="A" class="sel">PUSH</button><button data-plan="B">PULL</button><button data-plan="C">LEGS</button></div><p class="plan-meta" id="planMeta"></p><div id="exercises"></div><button class="primary" id="finish">Сохранить тренировку · +50 XP</button><p class="note">Работай с хорошей техникой и запасом 1–3 повторения. Не тренируйся через боль.</p></section>
-<section id="progress" class="screen"><p class="eyebrow">BODY & PERFORMANCE</p><h2>Прогресс</h2><div id="progressFields"></div><button class="primary" id="saveMetrics">Сохранить показатели</button><h3>История измерений</h3><div id="history"></div><h3>Последние тренировки</h3><div id="workoutHistory"></div></section>
-<section id="profile" class="screen"><p class="eyebrow">YOUR PROFILE</p><h2>Профиль</h2><div class="profile-card"><div class="profile-avatar" id="profileAvatar">P</div><div><b id="profileName">Пользователь</b><small id="profileGoal"></small></div></div><div class="metrics"><div>Всего XP<strong id="profileXP">0</strong></div><div>Уровень<strong id="profileLevel">1</strong></div><div>Тренировок<strong id="profileWorkouts">0</strong></div><div>Серия дней<strong id="profileStreak">0</strong></div></div><h3>Настройки</h3><label>Имя<input id="editName" maxlength="40"></label><label>Цель<select id="editGoal"><option value="cut">Похудение</option><option value="muscle">Набор мышц</option><option value="strength">Сила</option><option value="endurance">Выносливость</option><option value="general">Общая форма</option></select></label><button class="primary" id="saveProfile">Сохранить профиль</button><h3>Резервные копии</h3><button class="secondary full" id="export">Экспортировать данные</button><button class="secondary full" id="import">Импортировать копию</button><input type="file" id="importFile" accept="application/json,.json" hidden><p class="note">Версия 2.0. Сейчас данные хранятся локально в браузере. Для настоящих аккаунтов и синхронизации между устройствами понадобится серверная авторизация и база данных.</p><button class="danger full" id="reset">Сбросить локальные данные</button></section></main>
-<nav><button data-screen="home" class="active"><span>⌂</span><small>Главная</small></button><button data-screen="gym"><span>＋</span><small>Зал</small></button><button data-screen="progress"><span>⌁</span><small>Прогресс</small></button><button data-screen="profile"><span>○</span><small>Профиль</small></button></nav><div id="toast" role="status" aria-live="polite"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ppl gym">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <title>ppl gym</title>
+</head>
+<body>
+  <!-- ОНБОРДИНГ -->
+  <div id="onboarding" class="onboarding hidden">
+    <div class="onb-card">
+      <div class="onb-header">
+        <h2>ppl gym<span>.</span></h2>
+        <small id="stepIndicator">ШАГ 1 ИЗ 3</small>
+      </div>
+      
+      <!-- Шаг 1 -->
+      <div id="step1" class="onb-step">
+        <h3>Какая твоя цель?</h3>
+        <div class="goals-grid">
+          <button data-goal="cut">Похудение</button>
+          <button data-goal="muscle">Набор массы</button>
+          <button data-goal="strength">Сила</button>
+          <button data-goal="endurance">Выносливость</button>
+          <button data-goal="general">Форма</button>
+        </div>
+        <button class="primary" id="next1" disabled>Далее</button>
+      </div>
+
+      <!-- Шаг 2 -->
+      <div id="step2" class="onb-step hidden">
+        <h3>Твой опыт</h3>
+        <label>Имя<input id="name" type="text" placeholder="Как тебя зовут?" autocomplete="off"></label>
+        <label>Стаж
+          <select id="experience">
+            <option value="novice">Новичок</option>
+            <option value="intermediate">Средний</option>
+            <option value="advanced">Продвинутый</option>
+          </select>
+        </label>
+        <label>Тренировок в неделю
+          <select id="frequency">
+            <option value="2">2 раза</option>
+            <option value="3" selected>3 раза</option>
+            <option value="4">4 раза</option>
+            <option value="5">5 раз</option>
+          </select>
+        </label>
+        <div class="onb-actions">
+          <button class="secondary" id="back2">Назад</button>
+          <button class="primary" id="next2">Далее</button>
+        </div>
+      </div>
+
+      <!-- Шаг 3 -->
+      <div id="step3" class="onb-step hidden">
+        <h3>Начальные данные</h3>
+        <p class="note">Необязательно. Нужно для отслеживания прогресса.</p>
+        <label>Рост, см<input id="height" type="number" placeholder="180"></label>
+        <label>Вес, кг<input id="initialWeight" type="number" step="0.1" placeholder="80.0"></label>
+        <label>Талия, см<input id="initialWaist" type="number" step="0.5" placeholder="90"></label>
+        <div class="onb-actions">
+          <button class="secondary" id="back3">Назад</button>
+          <button class="primary" id="createProfile">Создать профиль</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+  <main class="app">
+    <header>
+      <div>
+        <small>PERSONAL FITNESS SYSTEM</small>
+        <h1>ppl gym<span>.</span></h1>
+      </div>
+      <b class="avatar" id="avatar" style="cursor:pointer">P</b>
+    </header>
+
+    <!-- ГЛАВНАЯ -->
+    <section id="home" class="screen active">
+      <p class="eyebrow">ТВОЙ ПРОГРЕСС</p>
+      <h2 id="greeting">Привет.</h2>
+      
+      <div class="hero">
+        <small>ТЕКУЩИЙ УРОВЕНЬ</small>
+        <div class="hero-row">
+          <strong id="level">LVL 01</strong>
+          <b><span id="xp">0</span> XP</b>
+        </div>
+        <div class="track"><i id="bar"></i></div>
+        <small id="xpInfo">0 / 500 XP</small>
+      </div>
+
+      <h3>Быстрый ввод</h3>
+      <div class="grid">
+        <button data-xp="50"><span style="color:var(--accent)">＋</span><b>Тренировка</b><small>+50 XP</small></button>
+        <button data-xp="20"><span style="color:var(--accent)">↗</span><b>Кардио</b><small>+20 XP</small></button>
+        <button data-xp="10"><span style="color:var(--accent)">◒</span><b>Питание</b><small>+10 XP</small></button>
+        <button data-xp="15"><span style="color:var(--accent)">☾</span><b>Восстановление<
+
+
+XP</small></button>
+      </div>
+
+      <div class="section-head">
+        <h3 id="metricsTitle">Твои показатели</h3>
+        <button class="text-button" data-screen="progress">История</button>
+      </div>
+      <div class="metrics" id="homeMetrics"></div>
+
+      <h3>Следующая тренировка</h3>
+      <div class="next-workout" id="nextWorkout"></div>
+    </section>
+
+    <!-- ЗАЛ -->
+    <section id="gym" class="screen">
+      <p class="eyebrow">TRAINING LOG</p>
+      <h2>Тренировки</h2>
+      <div class="tabs">
+        <button data-plan="A" class="sel">PUSH</button>
+        <button data-plan="B">PULL</button>
+        <button data-plan="C">LEGS</button>
+      </div>
+      <p id="planMeta" class="plan-meta"></p>
+      <div id="exercises"></div>
+      <button class="primary" id="finish">Завершить тренировку</button>
+      <p class="note">Работай с запасом 2–3 повторения (RIR 2–3). Не тренируйся через боль.</p>
+    </section>
+
+    <!-- ПРОГРЕСС -->
+    <section id="progress" class="screen">
+      <p class="eyebrow">BODY & PERFORMANCE</p>
+      <h2>Прогресс</h2>
+      <div id="progressFields"></div>
+      <button class="primary" id="saveMetrics">Сохранить показатели</button>
+      
+      <h3>История измерений</h3>
+      <div id="history"></div>
+
+      <h3>Последние тренировки</h3>
+      <div id="workoutHistory"></div>
+    </section>
+
+    <!-- ПРОФИЛЬ -->
+    <section id="profile" class="screen">
+      <p class="eyebrow">YOUR PROFILE</p>
+      <h2>Профиль</h2>
+      
+      <div class="profile-card">
+        <div class="profile-avatar" id="profileAvatar">A</div>
+        <div class="profile-info">
+          <strong id="profileName">Атлет</strong>
+          <small id="profileGoal">Цель</small>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div>Всего XP<strong id="profileXP">0</strong></div>
+        <div>Уровень<strong id="profileLevel">1</strong></div>
+        <div>Тренировок<strong id="profileWorkouts">0</strong></div>
+        <div>Серия дней<strong id="profileStreak">0</strong></div>
+      </div>
+
+      <h3>Настройки</h3>
+      <label>Имя<input id="editName" type="text"></label>
+      <label>Цель
+        <select id="editGoal">
+          <option value="cut">Похудение</option>
+          <option value="muscle">Набор массы</option>
+          <option value="strength">Сила</option>
+          <option value="endurance">Выносливость</option>
+          <option value="general">Форма</option>
+        </select>
+      </label>
+      <label>Тема оформления
+        <select id="editTheme">
+          <option value="light">Светлая (Graphite)</option>
+          <option value="dark">Темная (Midnight)</option>
+          <option value="blue">Electric Blue</option>
+          <option value="purple">Purple</option>
+          <option value="green">Neon Green</option>
+          <option value="sunset">Sunset</option>
+        </select>
+      </label>
+      <button class="primary" id="saveProfile" style="margin-top:15px">Сохранить настройки</button>
+
+      <h3>Данные</h3>
+      <button class="secondary" id="export" style="margin-bottom:10px; width:100%">Экспортировать данные (JSON)</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="secondary" id="import" style="margin-bottom:10px; width:100%">Восстановить из копии</button>
+      <button class="secondary" id="reset" style="color:#ff3b30; border-color:#ff3b30">Сбросить все данные</button>
+    </section>
+  </main>
+
+  <nav>
+    <button data-screen="home" class="active">⌂<small>Главная</small></button>
+    <button data-screen="gym">＋<small>Зал</small></button>
+    <button data-screen="progress">⌁<small>Прогресс</small></button>
+    <button data-screen="profile">○<small>Профиль</small></button>
+  </nav>
+  
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>/b><small>+15

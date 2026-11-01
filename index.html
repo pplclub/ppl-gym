@@ -17,10 +17,8 @@
     <div class="onb-card">
       <div class="onb-header">
         <h2>ppl gym<span>.</span></h2>
-        <small id="stepIndicator">ШАГ 1 ИЗ 3</small>
+        <small id="stepIndicator">ШАГ 1 ИЗ 2</small>
       </div>
-      
-      <!-- Шаг 1 -->
       <div id="step1" class="onb-step">
         <h3>Какая твоя цель?</h3>
         <div class="goals-grid">
@@ -32,41 +30,11 @@
         </div>
         <button class="primary" id="next1" disabled>Далее</button>
       </div>
-
-      <!-- Шаг 2 -->
       <div id="step2" class="onb-step hidden">
-        <h3>Твой опыт</h3>
-        <label>Имя<input id="name" type="text" placeholder="Как тебя зовут?" autocomplete="off"></label>
-        <label>Стаж
-          <select id="experience">
-            <option value="novice">Новичок</option>
-            <option value="intermediate">Средний</option>
-            <option value="advanced">Продвинутый</option>
-          </select>
-        </label>
-        <label>Тренировок в неделю
-          <select id="frequency">
-            <option value="2">2 раза</option>
-            <option value="3" selected>3 раза</option>
-            <option value="4">4 раза</option>
-            <option value="5">5 раз</option>
-          </select>
-        </label>
+        <h3>Знакомство</h3>
+        <label>Как тебя зовут?<input id="name" type="text" placeholder="Твое имя" autocomplete="off"></label>
         <div class="onb-actions">
           <button class="secondary" id="back2">Назад</button>
-          <button class="primary" id="next2">Далее</button>
-        </div>
-      </div>
-
-      <!-- Шаг 3 -->
-      <div id="step3" class="onb-step hidden">
-        <h3>Начальные данные</h3>
-        <p class="note">Необязательно. Нужно для отслеживания прогресса.</p>
-        <label>Рост, см<input id="height" type="number" placeholder="180"></label>
-        <label>Вес, кг<input id="initialWeight" type="number" step="0.1" placeholder="80.0"></label>
-        <label>Талия, см<input id="initialWaist" type="number" step="0.5" placeholder="90"></label>
-        <div class="onb-actions">
-          <button class="secondary" id="back3">Назад</button>
           <button class="primary" id="createProfile">Создать профиль</button>
         </div>
       </div>
@@ -103,17 +71,8 @@
         <button data-xp="50"><span style="color:var(--accent)">＋</span><b>Тренировка</b><small>+50 XP</small></button>
         <button data-xp="20"><span style="color:var(--accent)">↗</span><b>Кардио</b><small>+20 XP</small></button>
         <button data-xp="10"><span style="color:var(--accent)">◒</span><b>Питание</b><small>+10 XP</small></button>
-        <button data-xp="15"><span style="color:var(--accent)">☾</span><b>Восстановление<
-
-
-XP</small></button>
+        <button data-xp="15"><span style="color:var(--accent)">☾</span><b>Восстановление</b><small>+15 XP</small></button>
       </div>
-
-      <div class="section-head">
-        <h3 id="metricsTitle">Твои показатели</h3>
-        <button class="text-button" data-screen="progress">История</button>
-      </div>
-      <div class="metrics" id="homeMetrics"></div>
 
       <h3>Следующая тренировка</h3>
       <div class="next-workout" id="nextWorkout"></div>
@@ -134,20 +93,6 @@ XP</small></button>
       <p class="note">Работай с запасом 2–3 повторения (RIR 2–3). Не тренируйся через боль.</p>
     </section>
 
-    <!-- ПРОГРЕСС -->
-    <section id="progress" class="screen">
-      <p class="eyebrow">BODY & PERFORMANCE</p>
-      <h2>Прогресс</h2>
-      <div id="progressFields"></div>
-      <button class="primary" id="saveMetrics">Сохранить показатели</button>
-      
-      <h3>История измерений</h3>
-      <div id="history"></div>
-
-      <h3>Последние тренировки</h3>
-      <div id="workoutHistory"></div>
-    </section>
-
     <!-- ПРОФИЛЬ -->
     <section id="profile" class="screen">
       <p class="eyebrow">YOUR PROFILE</p>
@@ -163,7 +108,10 @@ XP</small></button>
 
       <div class="metrics">
         <div>Всего XP<strong id="profileXP">0</strong></div>
-        <div>Уровень<strong id="profileLevel">1</strong></div>
+        <div>Уровень<strong id="profileLevel">1</strong><
+
+
+div>
         <div>Тренировок<strong id="profileWorkouts">0</strong></div>
         <div>Серия дней<strong id="profileStreak">0</strong></div>
       </div>
@@ -202,11 +150,15 @@ XP</small></button>
   <nav>
     <button data-screen="home" class="active">⌂<small>Главная</small></button>
     <button data-screen="gym">＋<small>Зал</small></button>
-    <button data-screen="progress">⌁<small>Прогресс</small></button>
     <button data-screen="profile">○<small>Профиль</small></button>
   </nav>
   
   <div id="toast"></div>
   <script src="app.js"></script>
 </body>
-</html>/b><small>+15
+</html>/
+
+
+
+
+
